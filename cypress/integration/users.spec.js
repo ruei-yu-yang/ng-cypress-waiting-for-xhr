@@ -1,19 +1,21 @@
 /// <reference types="cypress" />
 
-context('Users', () => {
+context("Users", () => {
   beforeEach(() => {
-    cy.visit('/users');
+    cy.visit("/users");
   });
 
-  it('should get the users list from the server and display', () => {
-    cy.get('app-user-card').should((domList) => {
+  it("should get the users list from the server and display", () => {
+    cy.get("app-user-card").should((domList) => {
       expect(domList.length).equal(10);
     });
   });
 
-  it('should get the users list on searching', () => {
-    cy.get('#searchInput').type('irin');
-    cy.get('app-user-card').should((domList) => {
+  it("should get the users list on searching", () => {
+    cy.intercept("https://api.randomuser.me/*").as("searchUsers");
+    cy.get("#searchInput").type("irin");
+    cy.wait('@searchUsers');
+    cy.get("app-user-card").should((domList) => {
       expect(domList.length).equal(1);
     });
   });
